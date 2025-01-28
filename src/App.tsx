@@ -20,18 +20,11 @@ export const App: React.FC = () => {
   const loadTodos = async () => {
     try {
       const response = await getTodos();
+
       setTodos(response);
     } catch (error) {
       setErrorMessage(ErrorsType.LoadTodos);
     }
-  };
-
-  const toggleTodoCompleted = (id: number) => {
-    setTodos(prevTodos =>
-      prevTodos.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
   };
 
   useEffect(() => {
@@ -41,6 +34,7 @@ export const App: React.FC = () => {
   if (!USER_ID) {
     return <UserWarning />;
   }
+
   const prepared = getPreparedTodos(todos, filterBy);
   const activeTodos = todos.filter(todo => !todo.completed).length;
   const todosCount = todos.length;
@@ -52,10 +46,7 @@ export const App: React.FC = () => {
       <div className="todoapp__content">
         <TodoHeader onError={setErrorMessage} />
 
-        <TodoList
-          preparedTodos={prepared}
-          onToggleCompleted={toggleTodoCompleted}
-        />
+        <TodoList preparedTodos={prepared} />
 
         {todosCount > 0 && (
           <TodoFooter
