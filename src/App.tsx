@@ -20,6 +20,7 @@ export const App: React.FC = () => {
   const loadTodos = useCallback(async () => {
     try {
       const response = await getTodos();
+
       setTodos(response);
     } catch (error) {
       setErrorMessage(ErrorsType.LoadTodos);

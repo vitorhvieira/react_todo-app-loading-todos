@@ -23,6 +23,7 @@ export const TodoHeader: React.FC<Props> = ({ onError, todos }) => {
 
     if (!query.trim()) {
       onError(ErrorsType.EmptyTitle);
+
       return;
     }
 
