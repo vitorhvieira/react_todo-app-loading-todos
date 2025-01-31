@@ -3,16 +3,24 @@ import { Filter } from '../types/Filter';
 import cn from 'classnames';
 
 interface Props {
-  todos: number;
+  activeTodos: number;
   setFilter: (fil: Filter) => void;
   filter: Filter;
 }
 
-export const TodoFooter: React.FC<Props> = ({ filter, setFilter, todos }) => {
+export const TodoFooter: React.FC<Props> = ({
+  filter,
+  setFilter,
+  activeTodos,
+}) => {
+  const handleFilterChange = (newFilter: Filter) => () => {
+    setFilter(newFilter);
+  };
+
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {todos} items left
+        {activeTodos} items left
       </span>
 
       {/* Active link should have the 'selected' class */}
@@ -21,7 +29,7 @@ export const TodoFooter: React.FC<Props> = ({ filter, setFilter, todos }) => {
           href="#/"
           className={cn('filter__link', { selected: filter === Filter.All })}
           data-cy="FilterLinkAll"
-          onClick={() => setFilter(Filter.All)}
+          onClick={handleFilterChange(Filter.All)}
         >
           All
         </a>
@@ -30,7 +38,7 @@ export const TodoFooter: React.FC<Props> = ({ filter, setFilter, todos }) => {
           href="#/active"
           data-cy="FilterLinkActive"
           className={cn('filter__link', { selected: filter === Filter.Active })}
-          onClick={() => setFilter(Filter.Active)}
+          onClick={handleFilterChange(Filter.Active)}
         >
           Active
         </a>
@@ -41,7 +49,7 @@ export const TodoFooter: React.FC<Props> = ({ filter, setFilter, todos }) => {
           className={cn('filter__link', {
             selected: filter === Filter.Completed,
           })}
-          onClick={() => setFilter(Filter.Completed)}
+          onClick={handleFilterChange(Filter.Completed)}
         >
           Completed
         </a>

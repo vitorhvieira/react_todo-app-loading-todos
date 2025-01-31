@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
@@ -17,18 +17,21 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<ErrorsType | null>(null);
   const [filterBy, setFilterBy] = useState(Filter.All);
 
-  const loadTodos = async () => {
+  const loadTodos = useCallback(async () => {
     try {
       const response = await getTodos();
-
       setTodos(response);
     } catch (error) {
       setErrorMessage(ErrorsType.LoadTodos);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadTodos();
+  }, [loadTodos]);
+
+  const handleError = useCallback((error: ErrorsType | null) => {
+    setErrorMessage(error);
   }, []);
 
   if (!USER_ID) {
@@ -44,7 +47,7 @@ export const App: React.FC = () => {
       <h1 className="todoapp__title">todos</h1>
 
       <div className="todoapp__content">
-        <TodoHeader onError={setErrorMessage} />
+        <TodoHeader onError={setErrorMessage} todos={todos} />
 
         <TodoList preparedTodos={prepared} />
 
@@ -52,15 +55,12 @@ export const App: React.FC = () => {
           <TodoFooter
             filter={filterBy}
             setFilter={setFilterBy}
-            todos={activeTodos}
+            activeTodos={activeTodos}
           />
         )}
       </div>
 
-      <TodoNotification
-        errorMessage={errorMessage}
-        onSetError={setErrorMessage}
-      />
+      <TodoNotification errorMessage={errorMessage} onSetError={handleError} />
     </div>
   );
 };
